@@ -8,6 +8,7 @@
                 
                 <xpath expr="//field[@name='payment_term_id']" position="after">
                     <field name="sponsor_id" />
+                    <field name="assisted_purchase" />       
                 </xpath>
                 
                 <xpath expr="//notebook" position="inside">

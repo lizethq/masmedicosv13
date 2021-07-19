@@ -153,9 +153,11 @@ class WebsiteSaleExtended(WebsiteSale):
     # toma de datos de pago y se crea el asegurador principal
     @http.route(['/shop/address'], type='http', methods=['GET', 'POST'], auth="public", website=True, sitemap=False)
     def address(self, errortusdatos= '', **kw):
-        if 'assisted_purchase' in request.params and request.params['assisted_purchase']:         
+        if 'assisted_purchase' in request.params and request.params['assisted_purchase']:      
+            qcontext = '?assisted_purchase=' + str(request.params['assisted_purchase'])   
             assisted_purchase = request.params['assisted_purchase']
         else:
+            qcontext = ''
             assisted_purchase = 0
         ''' Toma de datos de pago y se crea el asegurador principal '''
         Partner = request.env['res.partner'].with_context(show_address=1).sudo()
@@ -282,16 +284,16 @@ class WebsiteSaleExtended(WebsiteSale):
                         order.write({'tusdatos_typedoc': document_types[str(kw["document"])]})  
                             
                         render_values = {'email': kw['email'],}
-                        return request.redirect(kw.get('callback') or '/shop/confirm_order')
+                        return request.redirect(kw.get('callback%s' % qcontext) or ('/shop/confirm_order%s' % qcontext))
                         #if not errors:
                         #    return request.redirect('/shop/tusdatos_request_confirmation')
                     elif not order.tusdatos_approved and order.tusdatos_request_id:
                         _logger.info("\n****TUS DATOS ORDER2*****\n")
-                        return request.redirect(kw.get('callback') or '/shop/confirm_order')
+                        return request.redirect(kw.get('callback%s' % qcontext) or ('/shop/confirm_order%s' % qcontext))
                         #return request.redirect('/shop/tusdatos_request_confirmation')
 
                     if not errors:
-                        return request.redirect(kw.get('callback') or '/shop/confirm_order')
+                        return request.redirect(kw.get('callback%s' % qcontext) or ('/shop/confirm_order%s' % qcontext))
                     
         country = 'country_id' in values and values['country_id'] != '' and request.env['res.country'].browse(int(values['country_id']))
         country = country and country.exists() or def_country_id
