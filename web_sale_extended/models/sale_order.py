@@ -313,14 +313,6 @@ class SaleOrder(models.Model):
                                
                 else:
                     continue
-                    
-    def _prepare_subscription_data(self, template):
-        res = super(SaleOrder, self)._prepare_subscription_data(template)        
-        res.update({
-            'order_id': self.id
-        })
-        return res
-    
 
     def create_subscriptions(self):
         """
