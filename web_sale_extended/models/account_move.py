@@ -39,20 +39,6 @@ class AccountMove(models.Model):
         if not self.env.su and not self.env.user.has_group('account.group_account_invoice'):
             raise AccessError(_("You don't have the access rights to post an invoice."))
         for move in self:
-            if not move.sponsor_id.generates_accounting:
-                to_write = {'state': 'finalized'}
-                move.write(to_write)
-                if move.name == '/':
-                    # Get the journal's sequence.
-                    sequence = move._get_sequence()
-                    if not sequence:
-                        raise UserError(_('Please define a sequence on your journal.'))
-
-                    # Consume a new number.
-                    to_write['name'] = sequence.with_context(ir_sequence_date=move.date).next_by_id()
-
-                move.write(to_write)
-                return True
             if move.state == 'posted':
                 raise UserError(_('The entry %s (id %s) is already posted.') % (move.name, move.id))
             if not move.line_ids.filtered(lambda line: not line.display_type):
@@ -92,8 +78,11 @@ class AccountMove(models.Model):
                 raise UserError(_("This move is configured to be auto-posted on {}".format(move.date.strftime(get_lang(self.env).date_format))))
 
             move.message_subscribe([p.id for p in [move.partner_id] if p not in move.sudo().message_partner_ids])
-
-            to_write = {'state': 'posted'}
+            
+            if not move.sponsor_id.generates_accounting:
+                to_write = {'state': 'finalized'}
+            else:
+                to_write = {'state': 'posted'}
 
             if move.name == '/':
                 # Get the journal's sequence.
@@ -144,4 +133,19 @@ class AccountMove(models.Model):
         return True
     
     
-    
+    def _cron_payment_invoice(self):
+        invoices_ids = self.env['account.move'].search([('amount_residual', '>', 0), ('type', '=', 'out_invoice'), ('state', '=', 'posted')])
+        for invoice in invoices_ids:
+            Payment = self.env['account.payment'].with_context(active_ids=invoice.ids, active_model='account.move', active_id=invoice.id)
+            payments_vals = {
+                'payment_type': 'inbound',
+                'partner_type': 'customer',
+                'partner_id': invoice.partner_id.id,
+                'company_id': 1,
+                'amount': invoice.amount_residual,
+                'payment_date': fields.Datetime.now(),
+                'journal_id': 9,
+                'payment_method_id': 1
+            }
+            payments = Payment.create(payments_vals)
+            payments.post()

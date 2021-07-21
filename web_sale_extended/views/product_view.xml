@@ -53,6 +53,7 @@
                 <xpath expr="//field[@name='parent_id']" position="after">
                     <field name="sequence_id" require="False"/>
                     <field name="sponsor_id" require="True"/>
+                    <field name="journal_id"/>
                 </xpath>
             </field>
         </record>

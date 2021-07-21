@@ -61,8 +61,14 @@ class SaleSubscription(models.Model):
     
     def _prepare_invoice_data(self):
         res = super(SaleSubscription, self)._prepare_invoice_data()
+        if self.recurring_invoice_line_ids[0].product_id.categ_id.journal_id:
+            journal = self.recurring_invoice_line_ids[0].product_id.categ_id.journal_id
+        else:
+            journal = self.template_id.journal_id or self.env['account.journal'].search([('type', '=', 'sale'), ('company_id', '=', self.company_id.id)], limit=1)        
         res.update({
-            'sponsor_id': self.sponsor_id
+            'journal_id': journal.id,
+            'sponsor_id': self.sponsor_id,
+            'payment_mean_id': 1
         })
         return res
     
