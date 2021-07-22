@@ -71,4 +71,8 @@ class SaleSubscription(models.Model):
             'payment_mean_id': 1
         })
         return res
-    
+
+    def validate_and_send_invoice(self, invoice):
+        self.ensure_one()
+        if invoice.state != 'posted':
+            invoice.post()
