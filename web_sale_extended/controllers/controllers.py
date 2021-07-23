@@ -1065,10 +1065,23 @@ class OdooWebsiteSearchCity(http.Controller):
         data['data'] = {'cities': cities}
         return json.dumps(data)
 
-    @http.route(['/shop/assisted_purchase'], methods=['GET'], type='http', auth="public", website=True)
+    @http.route(['/shop/assisted_purchase'], methods=['GET'], type='http', auth="user", website=True)
     def assisted_purchase(self):       
-        Products = request.env['product.template'].search([])        
-        data = {}        
+        Products = request.env['product.template'].search([])   
+        products_search_ids = []
+        data = {}  
+        
+        if 'search' in request.params and request.params['search']: 
+            for product in Products:
+                if len(request.params['search']) < 3:
+                    if (product.categ_id.name).lower().startswith(str(request.params['search']).lower()):
+                        products_search_ids.append(int(product.categ_id))
+                else:
+                    if str(request.params['search']).lower() in (product.categ_id.name).lower():
+                        products_search_ids.append(int(product.categ_id))
+                        
+            Products = request.env['product.template'].search([('categ_id', 'in', products_search_ids)])       
+        
         for product in Products:
             if product.list_price != 0:
                 if product.categ_id.name in data:
@@ -1081,37 +1094,7 @@ class OdooWebsiteSearchCity(http.Controller):
             'data': data
         }
         
-        return request.render("web_sale_extended.alternativo", values)
-    
-    @http.route(['/shop/assisted_purchase/search'],  methods=['GET'], type='http', auth="public", website=True)
-    def search_sponsor_plans(self, **kwargs):
-        Products = request.env['product.template'].search([])       
-        products_search_ids = []
-        data = {}        
-        for product in Products:
-            if len(request.params['search']) < 3:
-                if (product.categ_id.name).lower().startswith(str(request.params['search']).lower()):
-                    products_search_ids.append(int(product.categ_id))
-            else:
-                if str(request.params['search']).lower() in (product.categ_id.name).lower():
-                    products_search_ids.append(int(product.categ_id))
-                
-     
-        Products = request.env['product.template'].search([('categ_id', 'in', products_search_ids)])       
-        
-        for product in Products:
-            if product.categ_id.name in data:
-                data[product.categ_id.name].append(product)
-            else:
-                data[product.categ_id.name] = [product]
-        
-        values = {
-            'products': Products,
-            'data': data
-        }
-        
-        return request.render("web_sale_extended.alternativo", values)
-    
+        return request.render("web_sale_extended.alternativo", values)    
 
     @http.route(['/shop/payment/assisted_purchase/<int:order_id>'], methods=['GET'], type='http', auth="public", website=True)
     def get_payment_assisted_purchase(self, order_id, **kwargs):     
