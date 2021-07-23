@@ -12,7 +12,7 @@
         <t t-call="website.layout">
             <h1>Venta Asistida</h1>       
             
-            <form method="get" class="o_wsale_products_searchbar_form w-100 w-md-auto mt-2" action="/shop/assisted_purchase/search">
+            <form method="get" class="o_wsale_products_searchbar_form w-100 w-md-auto mt-2" action="/shop/assisted_purchase">
                 <div role="search" class="input-group">
                     <input type="text" name="search" class="search-query form-control oe_search_box" placeholder="Buscar…" data-limit="0" data-display-description="false" data-display-price="false" data-display-image="false" value="" autocomplete="off"/>
                     <div class="input-group-append">
