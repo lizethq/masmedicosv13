@@ -190,7 +190,7 @@ class CollectionsReportLine(models.Model):
                 mail_values = {
                     'subject': 'Archivo de recaudos de %s hasta %s'%(start_date, end_date),
                     'body_html' : 'CSV',
-                    'email_to': 'konoha4999@gmail.com',
+                    'email_to': 'directordeproyectos@masmedicos.co',
                     'email_from': 'contacto@masmedicos.co',
                     'attachment_ids': [(6, 0 , [att.id])]
                 }
@@ -198,7 +198,7 @@ class CollectionsReportLine(models.Model):
                 mail_values2 = {
                     'subject': 'Archivo de recaudos de %s hasta %s'%(start_date2, end_date2),
                     'body_html' : 'CSV',
-                    'email_to': 'konoha4999@gmail.com',
+                    'email_to': 'directordeproyectos@masmedicos.co',
                     'email_from': 'contacto@masmedicos.co',
                     'attachment_ids': [(6, 0 , [att2.id])]
                 }
@@ -223,7 +223,7 @@ class CollectionsReportLine(models.Model):
                 mail_values = {
                     'subject': 'Archivo de recaudos de %s hasta %s'%(start_date, end_date),
                     'body_html' : 'CSV',
-                    'email_to': 'konoha4999@gmail.com',
+                    'email_to': 'directordeproyectos@masmedicos.co',
                     'email_from': 'contacto@masmedicos.co',
                     'attachment_ids': [(6, 0 , [att.id])]
                 }
