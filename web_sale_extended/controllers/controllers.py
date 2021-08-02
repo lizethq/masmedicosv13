@@ -372,14 +372,14 @@ class WebsiteSaleExtended(WebsiteSale):
             order.message_post(body=body_message, type="comment")
             return request.redirect("/my/order/beneficiaries/" + str(order.id))
         
-        """ Evaluando si el producto tiene valor cero """
-        if order.main_product_id.list_price == 0:
+        """ Evaluando si el producto es un beneficio """
+        if order.main_product_id.is_beneficiary:
             order.write({
                 'payment_method_type': 'Product Without Price',
             })
             body_message = """
-                <b><span style='color:green;'>PayU Latam - Producto con precio cero</span></b><br/>
-                Se ha iniciado una transacción con Producto Precio Cero y el usuario ha sido redirigido al formulario 
+                <b><span style='color:green;'>PayU Latam - Producto de beneficio</span></b><br/>
+                Se ha iniciado una transacción con Producto un producto de beneficio y el usuario ha sido redirigido al formulario 
                 para el registro de Asegurado y Beneficiarios<br/>
             """
             order.message_post(body=body_message, type="comment")
