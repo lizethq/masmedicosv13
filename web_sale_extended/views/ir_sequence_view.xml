@@ -20,9 +20,9 @@
                             </group>
                             
                              <group>
-                                <field name="beneficiaries_number" widget="char"/>
-                                 <field name="sponsor_name"/>
-                                 <field name="sponsor_nit"/>
+                                <field name="beneficiaries_number"/>
+                                <field name="sponsor_name"/>
+                                <field name="sponsor_nit"/>
                             </group>
                         </group>
                     </page>
