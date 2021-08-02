@@ -4,7 +4,7 @@ import datetime
 import csv
 import base64
 from odoo import fields, models, tools, api,_
-from datetime import date, timedelta
+from datetime import date, timedelta, datetime
 from odoo.osv import expression
 from odoo.tools import date_utils
 from dateutil.relativedelta import relativedelta
@@ -40,18 +40,23 @@ class CollectionsReportLine(models.Model):
     identification_document = fields.Char('Número de Identificación', readonly=True)
     transaction_type = fields.Char('Tipo de transacción', readonly=True)
     clase = fields.Char('Clase', readonly=True)    
-    change_date = fields.Char('Fecha de cambio', readonly=True)    
-    collected_value = fields.Integer('Valor recaudo', readonly=True)    
-    number_of_installments = fields.Char('Cuotas recaudo', readonly=True)    
+    change_date = fields.Date('Fecha de cambio', readonly=True)    
+    collected_value = fields.Float('Valor recaudo', readonly=True)    
+    number_of_installments = fields.Integer('Cuotas recaudo', readonly=True)    
     payment_method = fields.Selection([
         ("Credit Card", "Tarjeta de Crédito"), 
         ("Cash", "Efectivo"), 
         ("PSE", "PSE"),
-        ("Product Without Price", "Beneficio "),
+        ("Product Without Price", "Beneficio"),
     ])
     number_of_plan_installments = fields.Integer('Cuotas plan', readonly=True)    
-    total_installments = fields.Char('Pagadas a la fecha', readonly=True)    
+    total_installments = fields.Integer('Pagadas a la fecha', readonly=True)    
     number_of_installments_arrears = fields.Char('#Cuotas en mora', readonly=True)
+    policyholder = fields.Char('Tomador de Póliza', readonly=True)    
+    sponsor_id = fields.Many2one('res.partner', string='Sponsor', readonly=True)
+    product_code = fields.Char('Codigo del producto', readonly=True)
+    product_name = fields.Char('Nombre del producto', readonly=True)
+    
     
     def init(self):
         tools.drop_view_if_exists(self._cr, 'report_collections')
@@ -69,11 +74,15 @@ class CollectionsReportLine(models.Model):
         tmpl.product_class as clase,
         sub.date_start as change_date,
         sub.recurring_total as collected_value,        
-        '1'::text as number_of_installments,        
+        1::int as number_of_installments,        
         sorder.payment_method_type as payment_method,
         subtmpl.recurring_rule_count as number_of_plan_installments,
-        '1'::text as total_installments,
-        ''::text as number_of_installments_arrears        
+        1::int as total_installments,
+        ''::text as number_of_installments_arrears,        
+        sub.policyholder as policyholder,        
+        sub.sponsor_id as sponsor_id,
+        tmpl.default_code as product_code,
+        tmpl.name as product_name
         
         from sale_subscription sub
         left join res_partner p on p.subscription_id = sub.id
@@ -88,7 +97,7 @@ class CollectionsReportLine(models.Model):
         left join sale_subscription_template subtmpl on subtmpl.id = sub.template_id
         left join sale_order sorder on sorder.subscription_id = sub.id
         
-        where p.buyer='t' and sorder.payment_method_type<>'Product Without Price'
+        where p.buyer='t'
         order by sub.id desc
         );
         """
@@ -114,16 +123,24 @@ class CollectionsReportLine(models.Model):
             end_date = (end_date.replace(day=1) + timedelta(days=32)).replace(day=1) - timedelta(days=1)  
         end_date = end_date.strftime('%Y-%m-%d')
 
-        headers = ['Número de Poliza', 'Número de Certificado', 'Primer Nombre', 'Segundo Nombre', 'Apellidos', 'Número de Identificación', 'Tipo de transacción', 'Clase', 'Fecha de cambio', 'Valor recaudo', 'Número de cuotas', 'Método de Pago', 'Número de cuotas plan', 'Total de cuotas', 'Número de cuotas en mora']
+        headers = ['Número de Poliza', 'Número de Certificado', 'Primer Nombre', 'Segundo Nombre', 'Apellidos', 'Número de Identificación', 'Tipo de transacción', 'Clase', 'Fecha de cambio', 'Valor recaudo', 'Número de cuotas', 'Método de Pago', 'Número de cuotas plan', 'Total de cuotas', 'Número de cuotas en mora', 'Sponsor', 'Tomador de poliza', 'Codigo de producto', 'Nombre plan']
         data.append(headers)
 
         records =  self.env['report.collections'].search([('change_date', '>=', start_date), ('change_date', '<=', end_date)])
         nreg = len(records)
         for record in records:
-            data.append([record.certificate_number, record.policy_number, record.firstname, record.othernames, record.lastname, record.identification_document, record.transaction_type, record.clase, record.change_date, record.collected_value, record.number_of_installments, record.payment_method, record.number_of_plan_installments, record.total_installments, record.number_of_installments_arrears])
+            if record.payment_method == 'Product Without Price':
+                payment = 'Beneficio'
+            elif record.payment_method == 'Credit Card':
+                payment = 'Tarjeta de credito'
+            elif record.payment_method == 'Cash':
+                payment = 'Efectivo'
+            elif record.payment_method == 'PSE':
+                payment = 'Pse'
+            data.append([record.certificate_number, record.policy_number, record.firstname, record.othernames, record.lastname, record.identification_document, record.transaction_type, record.clase, record.change_date.strftime('%d/%m/%Y'), record.collected_value, record.number_of_installments, payment, record.number_of_plan_installments, record.total_installments, record.number_of_installments_arrears, record.sponsor_id.name, record.policyholder, record.product_code, record.product_name])
             sum = sum + record.collected_value
 
-        data.append(['Fecha inicio', start_date, 'Fecha fin', end_date, 'Numero de registros', nreg, '', '', 'Total', sum])
+        data.append(['Fecha inicio', datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y'), 'Fecha fin', datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y'), 'Numero de registros', nreg, '', '', 'Total', sum])
 
         if 'start_date2' in locals():            
             data2 = []
@@ -132,10 +149,18 @@ class CollectionsReportLine(models.Model):
             records2 =  self.env['report.collections'].search([('change_date', '>=', start_date2), ('change_date', '<=', end_date2)])
             nreg2 = len(records2)
             for record in records2:
-                data2.append([record.certificate_number, record.policy_number, record.firstname, record.othernames, record.lastname, record.identification_document, record.transaction_type, record.clase, record.change_date, record.collected_value, record.number_of_installments, record.payment_method, record.number_of_plan_installments, record.total_installments, record.number_of_installments_arrears])
+                if record.payment_method == 'Product Without Price':
+                    payment = 'Beneficio'
+                elif record.payment_method == 'Credit Card':
+                    payment = 'Tarjeta de credito'
+                elif record.payment_method == 'Cash':
+                    payment = 'Efectivo'
+                elif record.payment_method == 'PSE':
+                    payment = 'Pse'
+                data2.append([record.certificate_number, record.policy_number, record.firstname, record.othernames, record.lastname, record.identification_document, record.transaction_type, record.clase, record.change_date.strftime('%d/%m/%Y'), record.collected_value, record.number_of_installments, payment, record.number_of_plan_installments, record.total_installments, record.number_of_installments_arrears, record.sponsor_id.name, record.policyholder, record.product_code, record.product_name])
                 sum2 = sum2 + record.collected_value
 
-            data2.append(['Fecha inicio', start_date2, 'Fecha fin', end_date2, 'Numero de registros', nreg2, '', '', 'Total', sum2])
+            data2.append(['Fecha inicio', datetime.strptime(start_date, '%Y-%m-%d').strftime('%d/%m/%Y'), 'Fecha fin', datetime.strptime(end_date, '%Y-%m-%d').strftime('%d/%m/%Y'), 'Numero de registros', nreg2, '', '', 'Total', sum2])
             
             with open('tmp/collection.csv', 'w', encoding='utf-8', newline='') as file, open('tmp/collection2.csv', 'w', encoding='utf-8', newline='') as file2:
                 writer = csv.writer(file, delimiter=',')
@@ -163,13 +188,23 @@ class CollectionsReportLine(models.Model):
                 })
 
                 mail_values = {
+                    'subject': 'Archivo de recaudos de %s hasta %s'%(start_date, end_date),
+                    'body_html' : 'CSV',
+                    'email_to': 'konoha4999@gmail.com',
+                    'email_from': 'contacto@masmedicos.co',
+                    'attachment_ids': [(6, 0 , [att.id])]
+                }
+                
+                mail_values2 = {
                     'subject': 'Archivo de recaudos de %s hasta %s'%(start_date2, end_date2),
                     'body_html' : 'CSV',
-                    'email_to': 'directordeproyectos@masmedicos.co',
+                    'email_to': 'konoha4999@gmail.com',
                     'email_from': 'contacto@masmedicos.co',
-                    'attachment_ids': [(6, 0 , [att.id, att2.id])]
+                    'attachment_ids': [(6, 0 , [att2.id])]
                 }
+                
                 self.env['mail.mail'].sudo().create(mail_values).send()
+                self.env['mail.mail'].sudo().create(mail_values2).send()
         else:
             with open ('tmp/collection.csv', 'w', encoding='utf-8', newline='') as file:
                 writer = csv.writer(file, delimiter=',')
@@ -188,7 +223,7 @@ class CollectionsReportLine(models.Model):
                 mail_values = {
                     'subject': 'Archivo de recaudos de %s hasta %s'%(start_date, end_date),
                     'body_html' : 'CSV',
-                    'email_to': 'directordeproyectos@masmedicos.co',
+                    'email_to': 'konoha4999@gmail.com',
                     'email_from': 'contacto@masmedicos.co',
                     'attachment_ids': [(6, 0 , [att.id])]
                 }

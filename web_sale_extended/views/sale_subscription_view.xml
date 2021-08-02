@@ -165,13 +165,17 @@
                     <field name="identification_document" />
                     <field name="transaction_type" />
                     <field name="clase" />
-                    <field name="change_date" />
+                     <field name="change_date" widget="date" />
                     <field name="collected_value" widget="monetary"/>
                     <field name="number_of_installments" />
                     <field name="payment_method" string="Metodo de pago" />
                     <field name="number_of_plan_installments" />
                     <field name="total_installments" />
                     <field name="number_of_installments_arrears" />
+                    <field name="sponsor_id" />
+                    <field name="policyholder" />
+                    <field name="product_code" />
+                    <field name="product_name" />
                 </tree>
             </field>
         </record>
