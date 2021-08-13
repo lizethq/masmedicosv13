@@ -843,133 +843,152 @@ odoo.define('web_sale_extended.show_website_cities', function(require) {
     $('#bfCheckBox1').on('click', function() {
         if( $(this).is(':checked') ){
             // Hacer algo si el checkbox ha sido seleccionado
+            $(this).val('1');
             $("input[name='bfaddress1']").val($("input[name='address']").val());
             $("select[name='bfdeparment1']").val($("select[name='deparment']").val()).change();            
             setTimeout(() => { $("select[name='bfcity1']").val($("select[name='city']").val()).change(); }, 500);
             $("input[name='bffijo1']").val($("input[name='fijo']").val());
+            
+            $("input[name='bfaddress1']").prop('readonly', true);            
+            $("select[name='bfdeparment1']").prop('disabled', true); 
+            $("select[name='bfcity1']").prop('disabled', true); 
         } else {
             // Hacer algo si el checkbox ha sido deseleccionado
+            $(this).val('0');
             $("input[name='bfaddress1']").val('');
             $("select[name='bfdeparment1']").val('');
             $("select[name='bfcity1']").val('');
+            
+            $("input[name='bfaddress1']").prop('readonly', false);            
+            $("select[name='bfdeparment1']").prop('disabled', false); 
+            $("select[name='bfcity1']").prop('disabled', false); 
         }
     });
     
     $('#bfCheckBox2').on('click', function() {
         if( $(this).is(':checked') ){
             // Hacer algo si el checkbox ha sido seleccionado
+            $(this).val('1');
             $("input[name='bfaddress2']").val($("input[name='address']").val());
             $("select[name='bfdeparment2']").val($("select[name='deparment']").val()).change();
             setTimeout(() => { $("select[name='bfcity2']").val($("select[name='city']").val()).change(); }, 500);
             $("input[name='bffijo2']").val($("input[name='fijo']").val());
+            
+            $("input[name='bfaddress2']").prop('readonly', true);            
+            $("select[name='bfdeparment2']").prop('disabled', true); 
+            $("select[name='bfcity2']").prop('disabled', true); 
         } else {
             // Hacer algo si el checkbox ha sido deseleccionado
+            $(this).val('0');
             $("input[name='bfaddress2']").val('');
             $("select[name='bfdeparment2']").val('');
             $("select[name='bfcity2']").val('');
+            
+            $("input[name='bfaddress2']").prop('readonly', false);            
+            $("select[name='bfdeparment2']").prop('disabled', false); 
+            $("select[name='bfcity2']").prop('disabled', false); 
         }
     });
     
     $('#bfCheckBox3').on('click', function() {
         if( $(this).is(':checked') ){
             // Hacer algo si el checkbox ha sido seleccionado
+            $(this).val('1');
             $("input[name='bfaddress3']").val($("input[name='address']").val());
             $("select[name='bfdeparment3']").val($("select[name='deparment']").val()).change();
             setTimeout(() => { $("select[name='bfcity3']").val($("select[name='city']").val()).change(); }, 500);
             $("input[name='bffijo3']").val($("input[name='fijo']").val());
+            
+            $("input[name='bfaddress3']").prop('readonly', true);            
+            $("select[name='bfdeparment3']").prop('disabled', true); 
+            $("select[name='bfcity3']").prop('disabled', true); 
         } else {
             // Hacer algo si el checkbox ha sido deseleccionado
+            $(this).val('0');
             $("input[name='bfaddress3']").val('');
             $("select[name='bfdeparment3']").val('');
             $("select[name='bfcity3']").val('');
+            
+            $("input[name='bfaddress3']").prop('readonly', false);            
+            $("select[name='bfdeparment3']").prop('disabled', false); 
+            $("select[name='bfcity3']").prop('disabled', false); 
         }
     });
     
     $('#bfCheckBox4').on('click', function() {
         if( $(this).is(':checked') ){
             // Hacer algo si el checkbox ha sido seleccionado
+            $(this).val('1');
             $("input[name='bfaddress4']").val($("input[name='address']").val());
             $("select[name='bfdeparment4']").val($("select[name='deparment']").val()).change();
             setTimeout(() => { $("select[name='bfcity4']").val($("select[name='city']").val()).change(); }, 500);
             $("input[name='bffijo4']").val($("input[name='fijo']").val());
+            
+            $("input[name='bfaddress4']").prop('readonly', true);            
+            $("select[name='bfdeparment4']").prop('disabled', true); 
+            $("select[name='bfcity4']").prop('disabled', true); 
         } else {
             // Hacer algo si el checkbox ha sido deseleccionado
+            $(this).val('0');
             $("input[name='bfaddress4']").val('');
             $("select[name='bfdeparment4']").val('');
             $("select[name='bfcity4']").val('');
+            
+            $("input[name='bfaddress4']").prop('readonly', false);            
+            $("select[name='bfdeparment4']").prop('disabled', false); 
+            $("select[name='bfcity4']").prop('disabled', false); 
         }
     });
     
     $('#bfCheckBox5').on('click', function() {
         if( $(this).is(':checked') ){
             // Hacer algo si el checkbox ha sido seleccionado
+            $(this).val('1');
             $("input[name='bfaddress5']").val($("input[name='address']").val());
             $("select[name='bfdeparment5']").val($("select[name='deparment']").val()).change();
             setTimeout(() => { $("select[name='bfcity5']").val($("select[name='city']").val()).change(); }, 500);
             $("input[name='bffijo5']").val($("input[name='fijo']").val());
+            
+            $("input[name='bfaddress5']").prop('readonly', true);            
+            $("select[name='bfdeparment5']").prop('disabled', true); 
+            $("select[name='bfcity5']").prop('disabled', true); 
         } else {
             // Hacer algo si el checkbox ha sido deseleccionado
+            $(this).val('0');
             $("input[name='bfaddress5']").val('');
             $("select[name='bfdeparment5']").val('');
             $("select[name='bfcity5']").val('');
+            
+            $("input[name='bfaddress5']").prop('readonly', false);            
+            $("select[name='bfdeparment5']").prop('disabled', false); 
+            $("select[name='bfcity5']").prop('disabled', false); 
         }
     });
     
     $('#bfCheckBox6').on('click', function() {
         if( $(this).is(':checked') ){
             // Hacer algo si el checkbox ha sido seleccionado
+            $(this).val('1');
             $("input[name='bfaddress6']").val($("input[name='address']").val());
             $("select[name='bfdeparment6']").val($("select[name='deparment']").val()).change();
             setTimeout(() => { $("select[name='bfcity6']").val($("select[name='city']").val()).change(); }, 500);
             $("input[name='bffijo6']").val($("input[name='fijo']").val());
+            
+            $("input[name='bfaddress6']").prop('readonly', true);            
+            $("select[name='bfdeparment6']").prop('disabled', true); 
+            $("select[name='bfcity6']").prop('disabled', true); 
         } else {
             // Hacer algo si el checkbox ha sido deseleccionado
+            $(this).val('0');
             $("input[name='bfaddress6']").val('');
             $("select[name='bfdeparment6']").val('');
             $("select[name='bfcity6']").val('');
+            
+            $("input[name='bfaddress6']").prop('readonly', false);            
+            $("select[name='bfdeparment6']").prop('disabled', false); 
+            $("select[name='bfcity6']").prop('disabled', false); 
         }
     });
-    
-//     $('#submit_beneficiaries').on('click', function() {
-//         if( $('#bfCheckBox1').is(':checked') ){
-//             $("input[name='bfaddress1']").val($("input[name='address']").val());
-//             $("select[name='bfdeparment1']").val($("select[name='deparment']").val()).change();
-//             setTimeout(() => { $("select[name='bfcity1']").val($("select[name='city']").val()).change(); }, 500);
-//             $("input[name='bffijo1']").val($("input[name='fijo']").val());
-//         }
-//         if( $('#bfCheckBox2').is(':checked') ){
-//             $("input[name='bfaddress2']").val($("input[name='address']").val());
-//             $("select[name='bfdeparment2']").val($("select[name='deparment']").val()).change();
-//             setTimeout(() => { $("select[name='bfcity2']").val($("select[name='city']").val()).change(); }, 500);
-//             $("input[name='bffijo2']").val($("input[name='fijo']").val());
-//         }
-//         if( $('#bfCheckBox3').is(':checked') ){
-//             $("input[name='bfaddress3']").val($("input[name='address']").val());
-//             $("select[name='bfdeparment3']").val($("select[name='deparment']").val()).change();
-//             setTimeout(() => { $("select[name='bfcity3']").val($("select[name='city']").val()).change(); }, 500);
-//             $("input[name='bffijo3']").val($("input[name='fijo']").val());
-//         }
-//         if( $('#bfCheckBox4').is(':checked') ){
-//             $("input[name='bfaddress4']").val($("input[name='address']").val());
-//             $("select[name='bfdeparment4']").val($("select[name='deparment']").val()).change();
-//             setTimeout(() => { $("select[name='bfcity4']").val($("select[name='city']").val()).change(); }, 500);
-//             $("input[name='bffijo4']").val($("input[name='fijo']").val());
-//         }
-//         if( $('#bfCheckBox5').is(':checked') ){
-//             $("input[name='bfaddress5']").val($("input[name='address']").val());
-//             $("select[name='bfdeparment5']").val($("select[name='deparment']").val()).change();
-//             setTimeout(() => { $("select[name='bfcity5']").val($("select[name='city']").val()).change(); }, 500);
-//             $("input[name='bffijo5']").val($("input[name='fijo']").val());
-//         }
-//         if( $('#bfCheckBox6').is(':checked') ){
-//             $("input[name='bfaddress6']").val($("input[name='address']").val());
-//             $("select[name='bfdeparment6']").val($("select[name='deparment']").val()).change();
-//             setTimeout(() => { $("select[name='bfcity6']").val($("select[name='city']").val()).change(); }, 500);
-//             $("input[name='bffijo6']").val($("input[name='fijo']").val());
-//         }
-//     });
-    
-    
    
     $("select[id='bfdeparment0']").on('change', function cambiarCiudades() {
         let estado = $(this).val();
@@ -1103,49 +1122,6 @@ odoo.define('web_sale_extended.show_website_cities', function(require) {
     //     },
     //     debug: true,
     // });
-
-    $("#submit_beneficiaries").on('click', function(event){
-        event.preventDefault();
-        if( $('#bfCheckBox1').is(':checked') ){
-            $("input[name='bfaddress1']").val($("input[name='address']").val());
-            $("select[name='bfdeparment1']").val($("select[name='deparment']").val()).change();
-            setTimeout(() => { $("select[name='bfcity1']").val($("select[name='city']").val()).change(); }, 500);
-            $("input[name='bffijo1']").val($("input[name='fijo']").val());
-        }
-        if( $('#bfCheckBox2').is(':checked') ){
-            $("input[name='bfaddress2']").val($("input[name='address']").val());
-            $("select[name='bfdeparment2']").val($("select[name='deparment']").val()).change();
-            setTimeout(() => { $("select[name='bfcity2']").val($("select[name='city']").val()).change(); }, 500);
-            $("input[name='bffijo2']").val($("input[name='fijo']").val());
-        }
-        if( $('#bfCheckBox3').is(':checked') ){
-            $("input[name='bfaddress3']").val($("input[name='address']").val());
-            $("select[name='bfdeparment3']").val($("select[name='deparment']").val()).change();
-            setTimeout(() => { $("select[name='bfcity3']").val($("select[name='city']").val()).change(); }, 500);
-            $("input[name='bffijo3']").val($("input[name='fijo']").val());
-        }
-        if( $('#bfCheckBox4').is(':checked') ){
-            $("input[name='bfaddress4']").val($("input[name='address']").val());
-            $("select[name='bfdeparment4']").val($("select[name='deparment']").val()).change();
-            setTimeout(() => { $("select[name='bfcity4']").val($("select[name='city']").val()).change(); }, 500);
-            $("input[name='bffijo4']").val($("input[name='fijo']").val());
-        }
-        if( $('#bfCheckBox5').is(':checked') ){
-            $("input[name='bfaddress5']").val($("input[name='address']").val());
-            $("select[name='bfdeparment5']").val($("select[name='deparment']").val()).change();
-            setTimeout(() => { $("select[name='bfcity5']").val($("select[name='city']").val()).change(); }, 500);
-            $("input[name='bffijo5']").val($("input[name='fijo']").val());
-        }
-        if( $('#bfCheckBox6').is(':checked') ){
-            $("input[name='bfaddress6']").val($("input[name='address']").val());
-            $("select[name='bfdeparment6']").val($("select[name='deparment']").val()).change();
-            setTimeout(() => { $("select[name='bfcity6']").val($("select[name='city']").val()).change(); }, 500);
-            $("input[name='bffijo6']").val($("input[name='fijo']").val());
-        }
-        $('#beneficiary').submit();
-        
-    });
-
 
 });
 

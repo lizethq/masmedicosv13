@@ -440,6 +440,7 @@ class WebsiteSaleExtended(WebsiteSale):
             'cities': self.get_cities(order.partner_id.state_id.id if order.partner_id.state_id else None),
             'countries': country.get_website_sale_countries().filtered(lambda line: line.id == 49),
             'document_types': self.get_document_types('beneficiary'),
+            'document_types_main_insured': self.get_document_types('payment'),
             'country': country,
             'order_detail': order.order_line[0],
             'current_city':order.partner_id.zip_id.city_id.id,
@@ -544,6 +545,17 @@ class WebsiteSaleExtended(WebsiteSale):
             
         cont_d, cont_h, cont_c, cont_m, cont_s = 0,0,0,0,0
         for i in range(int(kwargs['beneficiario'])):
+            checkBox = "bfCheckBox"+str(i+1)
+            if checkBox in kwargs:
+                if 'infoBuyer' in kwargs:
+                    state_id = Partner.state_id
+                    zip_id = Partner.zip_id
+                else:                    
+                    state_id = kwargs['deparment'] 
+                    zip_id = request.env['res.city.zip'].sudo().search([('city_id', '=', int(kwargs['city']))], limit=1)
+            else:                
+                state_id = kwargs["bfdeparment"+str(i+1)] 
+                zip_id = request.env['res.city.zip'].sudo().search([('city_id', '=', int(kwargs["bfcity"+str(i+1)]))], limit=1)
             firtst_name = "bfirstname"+str(i+1)
             other_name = "bfothername"+str(i+1)
             last_name = "bflastname"+str(i+1)
@@ -552,9 +564,6 @@ class WebsiteSaleExtended(WebsiteSale):
             document_type = "bfdocument"+str(i+1)
             identification_document = "bfnumero_documento"+str(i+1)
             country_id =  "bfcountry_id"+str(i+1)
-            state_id = "bfdeparment"+str(i+1)
-            city = "bfcity"+str(i+1)
-            zip_id = "bfcity"+str(i+1)
             birthdate = "bfdate"+str(i+1)
             ocupation = "bfocupacion"+str(i+1)
             gender = "bfsex"+str(i+1)
@@ -584,8 +593,6 @@ class WebsiteSaleExtended(WebsiteSale):
             if kwargs[other_name] == '':
                 kwargs[other_name] = ' '
             
-            suggested_zipcode = request.env['res.city.zip'].sudo().search([('city_id', '=', int(kwargs[city]))], limit=1)
-
             NewBeneficiaryPartner = BeneficiaryPartner.create({
                 'firstname': kwargs[firtst_name],
                 'lastname': kwargs[last_name],
@@ -601,10 +608,9 @@ class WebsiteSaleExtended(WebsiteSale):
                 'active': True,
                 'parent_id': Partner.id,
                 'beneficiary_country_id': int(kwargs[country_id]),
-                'beneficiary_state_id': int(kwargs[state_id]),
-                'beneficiary_zip_id': suggested_zipcode.id,
+                'beneficiary_state_id': int(state_id),
+                'beneficiary_zip_id': zip_id.id,
                 'birthdate_date': kwargs[birthdate],
-                #'marital_status': kwargs[marital_status],
                 'ocupation': kwargs[ocupation],
                 'gender': kwargs[gender],
                 'relationship': kwargs[relationship],

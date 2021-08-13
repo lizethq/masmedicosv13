@@ -1799,7 +1799,12 @@
                                         <div class="col-lg-4 col-md-4">
                                               <div class="form-group">
                                                 <label class="col-form-label" for="cash_partner_phone">Teléfono</label>
-                                                <input class="form-control" type="text" name="cash_partner_phone" t-att-value="order.partner_id.phone"/>
+                                                <t t-if="order.partner_id.phone">
+                                                    <input class="form-control" type="text" name="cash_partner_phone" t-att-value="order.partner_id.phone"/>
+                                                </t>
+                                                <t t-else="">
+                                                    <input class="form-control" type="text" name="cash_partner_phone" t-att-value="order.partner_id.mobile"/>
+                                                </t>
                                               </div>
                                         </div>
                                       </div>
@@ -2070,7 +2075,12 @@
                                         <div class="col-lg-4 col-md-4">
                                               <div class="form-group">
                                                 <label class="col-form-label" for="pse_partner_phone">Teléfono</label>
-                                                <input class="form-control" type="text" name="pse_partner_phone" t-att-value="order.partner_id.phone"/>
+                                                <t t-if="order.partner_id.phone">
+                                                    <input class="form-control" type="text" name="pse_partner_phone" t-att-value="order.partner_id.phone"/>
+                                                </t>
+                                                <t t-else="">
+                                                    <input class="form-control" type="text" name="pse_partner_phone" t-att-value="order.partner_id.mobile"/>
+                                                </t>
                                               </div>
                                         </div>
                                       </div>
