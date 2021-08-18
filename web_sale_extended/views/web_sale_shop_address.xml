@@ -193,6 +193,7 @@
                                             t-attf-class="form-control #{error.get('email') and 'is-invalid' or ''}" 
                                             t-att-value="'email' in checkout and checkout['email']" />
                                         </div>
+                                        
                                     <!--</t>-->
                                     <div t-attf-class="form-group #{error.get('phone') and 'o_has_error' or ''} col-lg-6" 
                                     id="div_phone">
